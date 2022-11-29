@@ -5,8 +5,8 @@ from werkzeug.utils import secure_filename
 from moviepy.editor import *
 import csv
 
-# if not os.path.exists('static/uploads'):
-# 	os.mkdir('static/uploads/')
+if not os.path.exists('static/uploads'):
+	os.makedirs('static/uploads/', exist_ok=True)
 
 UPLOAD_FOLDER = 'static/uploads/'
 
