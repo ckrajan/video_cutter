@@ -1,42 +1,27 @@
 #list {
-  position: absolute;
+  position: fixed;
+  padding: 5px 30px;
   margin-top: -630px;
   margin-left: 900px;
   margin-right: 50px;
-  padding: 5px 30px;
-}
-
-
-#browse_upload {
-  /* margin-top: 100px; */
-  margin-left: 10px;
-  position: absolute;
-}
-
-#name {
-  margin-top: -20px;
-  margin-right: 500px;
-  margin-right: 500px;
-  right: 53%;
-  position: absolute;
-  font-weight: bold;
-  font-family: monospace;
-  /* text-align:center;  */
-  font-size: 120%;
-}
-
-#screen {
-  margin-top: 50px;
-  margin-left: 10px;
-  position: relative;
 }
 
 #export_csv {
   background-color: #f39b28;
   padding: 15px 20px;
+  margin-top: 50px;
+  margin-left: 100px;
 }
 
 #chop_upload {
   background-color: #f39b28;
   padding: 15px 20px;
+  margin-top: 50px;
+  margin-left: 400px;
+}
+
+#dropdown{
+  margin-top: 40px;
+  margin-left: 400px;
+  position: absolute;
 }

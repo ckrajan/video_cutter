@@ -1,8 +1,11 @@
 var collection_name;
 var upload_file;
-let video2;
 
-var video_scr = document.getElementById('video_scr_id');
+var video_scr_select = document.getElementById('video_scr_id');
+var datalist_value = document.getElementById('videoInput');
+var upload = document.getElementById('upload');
+var video_scr = document.getElementById('video_scr_id_server');
+
 var ls = document.getElementById("list");
 var export_csv = document.getElementById("export_csv");
 var chop_upload_id = document.getElementById("chop_upload");
@@ -21,6 +24,7 @@ var clipname_arr = [];
 var uploaded_file_name;
 var encodedUri;
 var final_csv;
+var play_type = "upload";
 
 $('#export_csv').click(function () {
     chop_upload_id.style.display = "block";
@@ -33,14 +37,25 @@ document.body.onkeyup = function (e) {
         e.keyCode == 67
     ) {
         //your code
-        uploaded_file_name = file_name;
-        collection_name = collection_name_final;
-
-        // collection_name = document.getElementById("collection").value;
+        
+        if (play_type == "upload") {
+            collection_name = collection_name_final;
+            uploaded_file_name = file_name;
+        }
+        else {
+            collection_name = document.getElementById("select_collection_id").value;
+            uploaded_file_name = upload_file.replace(/^.*[\\\/]/, '');
+        }
         press++;
         export_csv.style.display = "block";
 
-        var sec_num = parseInt(video_scr.currentTime, 10);
+        if (video_scr.currentTime) {
+            var sec_num = parseInt(video_scr.currentTime, 10);
+        }
+        else {
+            var sec_num = parseInt(video_scr_select.currentTime, 10);
+        }
+
         var hours = Math.floor(sec_num / 3600);
         var minutes = Math.floor(sec_num / 60) % 60;
         var seconds = sec_num % 60;
@@ -169,20 +184,52 @@ function populateList(arr) {
 }
 
 var video_list;
+var datalist_value_selected;
 
 setTimeout(() => {
     var t = JSON.parse(video_list)
     populateList(t);
-}, 1000);
+}, 100);
 
-// setTimeout(() => {
-//     var datalist_value = document.getElementById('videoInput');
-//     var ff = datalist_value.value;
-// }, 2000);
+upload.addEventListener("click", function (e) {
+    document.getElementById('upload_collection').style.display = "block";
+});
+
+datalist_value.addEventListener('change', function (e) {
+    play_type = "select";
+    document.getElementById('select_collection').style.display = "block";
+    export_csv.style.marginTop = '600px';
+    export_csv.style.marginLeft = '100px';
+    ls.style.marginTop = '-150px';
+    ls.style.marginLeft = '900px';
+    ls.style.marginRight = '50px';
+    chop_upload_id.style.marginTop = '600px';
+    chop_upload_id.style.marginLeft = '400px';
+
+    datalist_value_selected = datalist_value.value;
+
+    play_video_server.style.display = "block";
+
+    upload_file = "static/uploads/".concat(datalist_value_selected)
+
+    video_scr.src = upload_file;
+    document.body.appendChild(video_scr);
+    video_scr.style.display = "block";
+    video_scr.muted = false;
+    video_scr.play();
+    video_scr.controls = true;
+
+    video_scr.autoplay = false;
+    video_scr.height = 500;
+    video_scr.width = 800;
+    video_scr.position = "relative";
+    video_scr.style.padding = "5px";
+});
+
 
 get_uploaded_files()
     .then(result => video_list = result.responseText)
-    .catch(error => console.error('Video id generated from client', error));
+    .catch(error => console.error('error', error));
 
 
 async function get_uploaded_files() {
@@ -190,44 +237,5 @@ async function get_uploaded_files() {
         contentType:
             "text/json"
     });
-
     return request
 }
-
-
-
-// $("#upload-button").click(function () {
-//     $("#upload").click();
-// });
-
-// $('#upload').change(function () {
-//     // document.getElementById("upload").disabled = true;
-
-//     upload_file = document.getElementById('upload').files[0];
-//     upload_file_name = upload_file.name;
-    // let videoMetaData = (upload_file) => {
-    //     return new Promise(function (resolve, reject) {
-    //         video_scr.addEventListener('canplay', function () {
-    //             resolve({
-    //                 video: video_scr,
-    //                 height: video_scr.videoHeight,
-    //                 width: video_scr.videoWidth
-    //             });
-    //         });
-    //         video_scr.src = URL.createObjectURL(upload_file);
-    //         document.body.appendChild(video_scr);
-    //         video_scr.style.display = "block";
-    //         video_scr.muted = false;
-    //         video_scr.play();
-    //         video_scr.controls = true;
-
-    //         video_scr.autoplay = false;
-    //         video_scr.height = 500;
-    //         video_scr.width = 800;
-    //         video_scr.position = "relative";
-    //         video_scr.style.padding = "5px";
-    //     })
-    // }
-    // videoMetaData($('#upload')[0].files[0]).then(function (value) {
-    // })
-// });

@@ -63,8 +63,9 @@ def chop_video():
 		clip = VideoFileClip(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 		start_time = i[3]
 		end_time = i[4]
-		clip_x = clip.subclip(start_time, end_time)
-		clip_x.write_videofile(os.path.join(chop_path, i[2] + ".mp4"))
+		if(start_time != end_time):
+			clip_x = clip.subclip(start_time, end_time)
+			clip_x.write_videofile(os.path.join(chop_path, i[2] + ".mp4"))
 	
 	return filename
 
@@ -72,16 +73,11 @@ def chop_video():
 def display_video(filename):
 	return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
-# @app.route('/display_server/<filename>')
-# def display_server_video(filename):
-# 	return redirect(url_for('static', filename='uploads/' + filename), code=301)
-
 @app.route('/uploaded_files', methods=['GET', 'POST'])
 def uploaded_files():
 	video_list = 'static/uploads/'
 	allfiles = os.listdir(video_list)
 	files = [ fname for fname in allfiles if fname.endswith('.mp4')]
-	print(files)
 	return files
 
 
