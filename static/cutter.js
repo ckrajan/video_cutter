@@ -26,6 +26,9 @@ var encodedUri;
 var final_csv;
 var play_type = "upload";
 
+var frame_arr = [];
+var current_frame;
+
 $('#export_csv').click(function () {
     chop_upload_id.style.display = "block";
 });
@@ -37,7 +40,7 @@ document.body.onkeyup = function (e) {
         e.keyCode == 67
     ) {
         //your code
-        
+
         if (play_type == "upload") {
             collection_name = collection_name_final;
             uploaded_file_name = file_name;
@@ -76,11 +79,15 @@ document.body.onkeyup = function (e) {
             time_arr.push(hours + ":" + minutes + ":" + seconds);
         }
 
+        frame_arr.push(current_frame);
+
         if (press % 2 == 0) {
 
             if (counter == 0) {
-                rows[counter] = ["File name", "Collection Name", "Split name", "Start time", "End time"];
+                rows[counter] = ["File name", "Collection Name", "Split name", "Start time", "End time", "Start Frame", "End Frame"];
             }
+
+            
 
             counter++;
             console.log(time_arr);
@@ -90,12 +97,19 @@ document.body.onkeyup = function (e) {
             ls.style.display = "block";
             ls.innerHTML += '<div id="box' + counter + '" style="color:rgb(31, 87, 37); font-size: 18px;"><i style="color:red; id="trash' + counter + '" class="fas fa-trash" onclick="removeItem(this);"></i> Collection: ' + collection_name + '; Split name: Clip_' + split_name + '; Start time: ' + start_time + '; End time: ' + end_time + '</div>';
 
+            var start_frame = frame_arr[0];
+            var end_frame = frame_arr[1];
+
             if (counter > 0) {
-                rows[counter] = [uploaded_file_name, collection_name, "Clip_" + split_name, start_time, end_time];
+                rows[counter] = [uploaded_file_name, collection_name, "Clip_" + split_name, start_time, end_time, start_frame, end_frame];
             }
 
             while (time_arr.length > 0) {
                 time_arr.pop();
+            }
+
+            while (frame_arr.length > 0) {
+                frame_arr.pop();
             }
         }
     }
@@ -167,6 +181,27 @@ function chop_upload() {
     send_csv();
 }
 
+var currentFrame = $('#currentFrame');
+var video = VideoFrame({
+    id : 'video',
+    frameRate: 25,
+    callback : function(frame) {
+        current_frame = frame;
+        currentFrame.html(frame);
+    }
+});
+
+$('#play-pause').click(function(){
+    if(video.video.paused){
+        video.video.play();
+        video.listen('frame');
+        $(this).html('Pause');
+    }else{
+        video.video.pause();
+        video.stopListen();
+        $(this).html('Play');
+    }
+});
 
 
 // This is that input field

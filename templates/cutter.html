@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="static/main.css">
 
   <script src="https://kit.fontawesome.com/716aab55ab.js" crossorigin="anonymous"></script>
+  <script src="https://rawgit.com/allensarkisyan/VideoFrame/master/VideoFrame.min.js"></script>
 
   <title>Video cutter tool</title>
 </head>
@@ -64,6 +65,14 @@
     let file_name = '{{ filename }}';
     let collection_name_final = '{{ collection }}';
   </script>
+
+<div class="frame">  
+  <span id="currentFrame">0</span>
+  </div>
+  
+<div id="controls">
+  <button id="play-pause">Play</button>
+</div>
 
   <div id="play_video_server" style="display:none;">
     <video id="video_scr_id_server" width="800" height="500" controls>
