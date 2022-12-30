@@ -174,7 +174,7 @@ def chop_video():
 								outer_mouth = drawlips("outer",cropped_image,outer_pts,ls_single_face1,height_crop, width_crop)
 								inner_mouth = drawlips("inner",cropped_image,inner_pts,ls_single_face1,height_crop, width_crop)
 								
-							frame[bbox_points["ymin"]:bbox_points["ymax"], bbox_points["xmin"]:bbox_points["xmax"]] = rotate_img
+								frame[bbox_points["ymin"]:bbox_points["ymax"], bbox_points["xmin"]:bbox_points["xmax"]] = rotate_img
 					
 					csv_row = [filename_only, i[2], frame_counter, str(outer_mouth), str(inner_mouth)]
 
