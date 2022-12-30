@@ -140,12 +140,10 @@ def chop_video():
 
 							height, width, _ = frame.shape
 
-							angle_deg = eyes_angle(frame,left_eye_points,right_eye_points,nose_tip,ls_single_face,height, width)
-							rotate_img = imutils.rotate(frame, angle=angle_deg)
-							frame = rotate_img
-
 							outer_mouth = drawlips("outer",frame,outer_pts,ls_single_face,height, width)
 							inner_mouth = drawlips("inner",frame,inner_pts,ls_single_face,height, width)
+
+							# frame = affine_transform_full(frame,ls_single_face,height, width)
 							
 					else:
 						height, width, _ = frame.shape
@@ -168,13 +166,13 @@ def chop_video():
 							keypoints1 = frame_result1.multi_face_landmarks
 							if(keypoints1 is not None):
 								ls_single_face1=keypoints1[0].landmark  
-								angle_deg = eyes_angle(cropped_image,left_eye_points,right_eye_points,nose_tip,ls_single_face1,height_crop, width_crop)
-								rotate_img = imutils.rotate(cropped_image, angle=angle_deg)
 
 								outer_mouth = drawlips("outer",cropped_image,outer_pts,ls_single_face1,height_crop, width_crop)
 								inner_mouth = drawlips("inner",cropped_image,inner_pts,ls_single_face1,height_crop, width_crop)
 								
-								frame[bbox_points["ymin"]:bbox_points["ymax"], bbox_points["xmin"]:bbox_points["xmax"]] = rotate_img
+								# cropped_image = affine_transform_crop(cropped_image,ls_single_face1,height_crop, width_crop)
+
+								frame[bbox_points["ymin"]:bbox_points["ymax"], bbox_points["xmin"]:bbox_points["xmax"]] = cropped_image
 					
 					csv_row = [filename_only, i[2], frame_counter, str(outer_mouth), str(inner_mouth)]
 
@@ -187,7 +185,7 @@ def chop_video():
 					inner_mouth.clear()
 
 				frame_counter = frame_counter + 1   
-				if(frame_counter > approx_frame_count_x):
+				if(frame_counter > approx_frame_count):
 				# if(frame_counter > frame_no):  
 					running = False
 					out.release()
@@ -224,7 +222,7 @@ def drawlips(mouth,frame,pts,ls_single_face,height, width):
 		coordinates = [x, y]
 		arr_mouth.append(coordinates)
 		
-		cv2.circle(frame, (x, y), 1, (255, 0, 0), -1)
+		# cv2.circle(frame, (x, y), 1, (255, 0, 0), -1)
 
 		if(mouth == "outer"):
 			outer_mouth.append(coordinates)
@@ -242,13 +240,25 @@ def drawlips(mouth,frame,pts,ls_single_face,height, width):
 	thickness = 2
 
 	# draw closed polyline
-	cv2.polylines(frame, [arr_mouth1], isClosed, color, thickness)
+	# cv2.polylines(frame, [arr_mouth1], isClosed, color, thickness)
 
 	if(mouth == "outer"):
 		return outer_mouth
 		
 	else:
 		return inner_mouth
+
+def affine_transform_full(frame,ls_single_face,height, width):
+	angle_deg = eyes_angle(frame,left_eye_points,right_eye_points,nose_tip,ls_single_face,height, width)
+	rotate_img = imutils.rotate(frame, angle=angle_deg)
+	frame = rotate_img
+	return frame
+
+def affine_transform_crop(cropped_image,ls_single_face1,height_crop, width_crop):
+	angle_deg = eyes_angle(cropped_image,left_eye_points,right_eye_points,nose_tip,ls_single_face1,height_crop, width_crop)
+	rotate_img = imutils.rotate(cropped_image, angle=angle_deg)
+	cropped_image = rotate_img
+	return cropped_image
 
 left_pts = []
 right_pts = []
