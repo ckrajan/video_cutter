@@ -91,10 +91,17 @@ def chop_video():
 	chop_path = 'static/uploads/%s' % filename_only + '/'
 
 	header = ['Filename', 'Clip_name', 'Frame', 'Outer_pts', 'Inner_pts']
-	data = []
+	# data = []
 
 	if not os.path.exists('static/uploads/%s' % filename_only):
 		os.mkdir(chop_path)
+
+
+	with open(chop_path + '/metadata.csv', 'w', encoding='UTF8', newline="") as f:
+		writer = csv.writer(f)
+
+		# write the header
+		writer.writerow(header)
 
 	for i in rows_final:
 		clip = VideoFileClip(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -176,7 +183,13 @@ def chop_video():
 					
 					csv_row = [filename_only, i[2], frame_counter, str(outer_mouth), str(inner_mouth)]
 
-					data.append(csv_row)
+					# data.append(csv_row)
+
+					with open(chop_path + '/metadata.csv', 'a', encoding='UTF8', newline="") as f:
+						writer_1 = csv.writer(f)
+						# write the data
+						writer_1.writerow(csv_row)
+						# writer.writerow("\n")
 
 					out.write(frame)
 					
@@ -190,16 +203,7 @@ def chop_video():
 					running = False
 					out.release()
 
-	with open(chop_path + '/metadata.csv', 'w', encoding='UTF8', newline="") as f:
-		writer = csv.writer(f)
 
-		# write the header
-		writer.writerow(header)
-
-		for j in data:
-			# write the data
-			writer.writerow(j)
-			# writer.writerow("\n")
 
 
 	return filename
