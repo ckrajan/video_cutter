@@ -10,6 +10,7 @@ import mediapipe as mp
 import numpy as np
 import math
 import imutils
+import jsonpickle
 
 detector = mp.solutions.face_mesh.FaceMesh(
 max_num_faces=10,
@@ -319,7 +320,7 @@ def uploaded_files():
 	video_list = 'static/uploads/'
 	allfiles = os.listdir(video_list)
 	files = [ fname for fname in allfiles if fname.endswith('.mp4')]
-	return files
+	return jsonpickle.encode(files)
 
 
 if __name__ == '__main__':
